@@ -1,0 +1,76 @@
+streamlit
+
+# -------------------------
+# Core Python / Data
+# -------------------------
+numpy
+pandas
+scipy
+sympy
+
+# -------------------------
+# Visualization
+# -------------------------
+matplotlib
+plotly
+
+# -------------------------
+# Machine Learning
+# -------------------------
+scikit-learn
+
+# -------------------------
+# Computer Vision
+# -------------------------
+opencv-python
+Pillow
+
+# -------------------------
+# OCR
+# -------------------------
+pytesseract
+
+# -------------------------
+# LangChain
+# -------------------------
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+
+# -------------------------
+# Vector Database
+# -------------------------
+faiss-cpu
+
+# -------------------------
+# PDF Processing
+# -------------------------
+pypdf
+
+# -------------------------
+# LLM Providers
+# -------------------------
+openai
+google-generativeai
+groq
+
+# -------------------------
+# Local LLM
+# -------------------------
+ollama
+
+# -------------------------
+# Environment Variables
+# -------------------------
+python-dotenv
+
+# -------------------------
+# HTTP / API
+# -------------------------
+requests
+
+# -------------------------
+# Validation
+# -------------------------
+pydantic
