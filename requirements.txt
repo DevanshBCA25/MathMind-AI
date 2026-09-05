@@ -74,3 +74,10 @@ requests
 # Validation
 # -------------------------
 pydantic
+
+
+
+
+easyocr
+torch
+torchvision
