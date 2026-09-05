@@ -1,83 +1,106 @@
-streamlit
+# ================================
+# MathMind-AI - Core
+# ================================
 
-# -------------------------
-# Core Python / Data
-# -------------------------
-numpy
-pandas
-scipy
-sympy
+streamlit>=1.40,<2.0
+numpy>=1.26,<3.0
+pandas>=2.2,<3.0
+Pillow>=10.0,<12.0
+scipy>=1.13,<2.0
+scikit-learn>=1.5,<2.0
 
-# -------------------------
-# Visualization
-# -------------------------
-matplotlib
-plotly
+# ================================
+# Mathematics / Symbolic Computing
+# ================================
 
-# -------------------------
-# Machine Learning
-# -------------------------
-scikit-learn
+sympy>=1.13,<2.0
 
-# -------------------------
+# ================================
+# Data Visualization / Analytics
+# ================================
+
+matplotlib>=3.8,<4.0
+seaborn>=0.13,<1.0
+plotly>=5.20,<7.0
+
+# ================================
 # Computer Vision
-# -------------------------
-opencv-python-headless
-Pillow
+# ================================
 
-# -------------------------
+opencv-python-headless>=4.10,<5.0
+
+# ================================
 # OCR
-# -------------------------
-pytesseract
+# ================================
 
-# -------------------------
-# LangChain
-# -------------------------
-langchain
-langchain-core
-langchain-community
-langchain-text-splitters
+easyocr==1.7.2
 
-# -------------------------
-# Vector Database
-# -------------------------
-faiss-cpu
+# EasyOCR dependencies
+torch>=2.2,<2.8
+torchvision>=0.17,<0.23
 
-# -------------------------
-# PDF Processing
-# -------------------------
-pypdf
+# ================================
+# PDF / Document Processing
+# ================================
 
-# -------------------------
+PyMuPDF>=1.24,<2.0
+pypdf>=5.0,<7.0
+
+# ================================
+# LangChain / RAG
+# ================================
+
+langchain>=0.3,<1.0
+langchain-community>=0.3,<1.0
+langchain-text-splitters>=0.3,<1.0
+langchain-core>=0.3,<1.0
+
+# ================================
+# LangGraph / Multi-Agent
+# ================================
+
+langgraph>=0.2,<1.0
+
+# ================================
+# Vector Database / Embeddings
+# ================================
+
+faiss-cpu>=1.8,<2.0
+sentence-transformers>=3.0,<6.0
+transformers>=4.45,<5.0
+huggingface-hub>=0.24,<1.0
+
+# ================================
 # LLM Providers
-# -------------------------
-openai
-google-generativeai
-groq
+# ================================
 
-# -------------------------
-# Local LLM
-# -------------------------
-ollama
+openai>=1.50,<2.0
+google-generativeai>=0.8,<1.0
+groq>=0.11,<1.0
+ollama>=0.4,<1.0
 
-# -------------------------
-# Environment Variables
-# -------------------------
-python-dotenv
+# LangChain provider integrations
+langchain-openai>=0.3,<1.0
+langchain-google-genai>=2.0,<3.0
+langchain-groq>=0.3,<1.0
 
-# -------------------------
-# HTTP / API
-# -------------------------
-requests
+# ================================
+# Environment / Configuration
+# ================================
 
-# -------------------------
-# Validation
-# -------------------------
-pydantic
+python-dotenv>=1.0,<2.0
+pydantic>=2.7,<3.0
 
+# ================================
+# API
+# ================================
 
+fastapi>=0.110,<1.0
+uvicorn>=0.30,<1.0
+requests>=2.31,<3.0
 
+# ================================
+# Utilities
+# ================================
 
-easyocr
-torch
-torchvision
+tqdm>=4.66,<5.0
