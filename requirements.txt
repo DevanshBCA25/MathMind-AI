@@ -22,7 +22,7 @@ scikit-learn
 # -------------------------
 # Computer Vision
 # -------------------------
-opencv-python
+opencv-python-headless
 Pillow
 
 # -------------------------
