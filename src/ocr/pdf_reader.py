@@ -1,89 +1,68 @@
-from pathlib import Path
-
 import fitz
+from PIL import Image
 
 
-def render_pdf_pages(pdf_path, dpi=150):
+def render_pdf_pages(uploaded_file):
     """
-    Convert every PDF page into an image.
-
-    Returns:
-        List of dictionaries containing:
-        - page number
-        - rendered image
-        - pdf path
+    Render a Streamlit UploadedFile PDF directly from memory.
+    No temporary local file path is required.
     """
-
-    if isinstance(pdf_path, dict):
-
-        pdf_path = (
-            pdf_path.get("path")
-            or pdf_path.get("file_path")
-            or pdf_path.get("pdf_path")
-        )
-
-    if not pdf_path:
-        raise ValueError(
-            "PDF path is missing."
-        )
-
-    pdf_path = Path(str(pdf_path))
-
-    if not pdf_path.exists():
-        raise FileNotFoundError(
-            f"PDF not found: {pdf_path}"
-        )
-
-    pages = []
-
-    document = fitz.open(
-        str(pdf_path)
-    )
 
     try:
+        uploaded_file.seek(0)
 
-        zoom = dpi / 72.0
+        pdf_bytes = uploaded_file.read()
 
-        matrix = fitz.Matrix(
-            zoom,
-            zoom,
+        if not pdf_bytes:
+            raise FileNotFoundError(
+                "Uploaded PDF is empty."
+            )
+
+        document = fitz.open(
+            stream=pdf_bytes,
+            filetype="pdf",
         )
 
-        for page_number, page in enumerate(
-            document
-        ):
+        if document.page_count == 0:
+            document.close()
+            raise FileNotFoundError(
+                "PDF contains no pages."
+            )
 
-            pixmap = page.get_pixmap(
+        pages = []
+
+        for page_number in range(document.page_count):
+
+            page = document.load_page(page_number)
+
+            matrix = fitz.Matrix(2, 2)
+
+            pix = page.get_pixmap(
                 matrix=matrix,
                 alpha=False,
             )
 
-            image = pixmap.tobytes(
-                "png"
+            image = Image.frombytes(
+                "RGB",
+                [pix.width, pix.height],
+                pix.samples,
             )
 
-            pages.append(
-                {
-                    "page": page_number,
-                    "image": image,
-                    "path": str(pdf_path),
-                }
-            )
-
-    finally:
+            pages.append(image)
 
         document.close()
 
-    return pages
+        return pages
+
+    except Exception as e:
+        raise RuntimeError(
+            f"Unable to render PDF: {str(e)}"
+        )
 
 
-def read_pdf(pdf_path):
+def read_pdf(uploaded_file):
     """
-    Backward-compatible PDF reader.
-
-    Returns rendered PDF pages.
+    Read uploaded PDF and return rendered page images.
     """
 
-    return render_pdf_pages(
-        pdf_path
-    )
+    return render_pdf_pages(uploaded_file)
