@@ -1,5 +1,4 @@
-from pathlib import Path
-
+import numpy as np
 import easyocr
 
 
@@ -7,12 +6,6 @@ _reader = None
 
 
 def get_reader():
-    """
-    Create EasyOCR reader only once.
-    This prevents the model from loading again
-    for every page/document.
-    """
-
     global _reader
 
     if _reader is None:
@@ -26,17 +19,16 @@ def get_reader():
 
 def extract_text(image):
     """
-    Extract text from an IMAGE using EasyOCR.
-
-    IMPORTANT:
-    EasyOCR does not read PDF files directly.
-    The PDF page must first be converted to an image.
+    Extract text from a PIL image or NumPy image.
     """
 
     if image is None:
-        raise ValueError(
-            "OCR received an empty image."
-        )
+        return ""
+
+    # PIL Image -> NumPy array
+    if hasattr(image, "convert"):
+        image = image.convert("RGB")
+        image = np.array(image)
 
     reader = get_reader()
 
@@ -46,10 +38,4 @@ def extract_text(image):
         paragraph=True,
     )
 
-    text = "\n".join(
-        str(item).strip()
-        for item in results
-        if str(item).strip()
-    )
-
-    return text
+    return "\n".join(results)
