@@ -153,8 +153,8 @@ def test_vector_database_import():
 def test_ui_modules():
 
     modules = [
-        "src.ui.agents_ui",
-        "src.ui.rag_agent_ui",
+        "src.ui.home_ui",
+        "src.ui.unified_solver_ui",
         "src.ui.provider_health_ui",
     ]
 

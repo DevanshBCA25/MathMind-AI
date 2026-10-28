@@ -1,4 +1,6 @@
 import streamlit as st
+
+from src.ui.common import page_header
 from PIL import Image
 
 from src.ocr.ocr_engine import extract_text
@@ -6,7 +8,11 @@ from src.ocr.pdf_reader import read_pdf
 
 
 def show():
-    st.title("📝 OCR - Optical Character Recognition")
+    page_header(
+        "📷",
+        "Scan & Solve",
+        "Read a question from a photo or PDF",
+    )
 
     st.write(
         "Upload an image or PDF and extract text using OCR."
@@ -45,7 +51,7 @@ def show():
             st.image(
                 image,
                 caption="Input Image",
-                use_container_width=True,
+                width="stretch",
             )
 
             with st.spinner("Extracting text from image..."):
@@ -85,7 +91,7 @@ def show():
                 st.image(
                     page_image,
                     caption=f"PDF Page {page_number}",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
                 with st.spinner(

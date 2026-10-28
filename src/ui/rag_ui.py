@@ -3,6 +3,8 @@ from pathlib import Path
 
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.rag.config import (
     DOCUMENTS_DIR,
     VECTOR_DB_DIR,
@@ -422,7 +424,7 @@ def render_sidebar():
 
         if st.sidebar.button(
             "💾 Save Documents",
-            use_container_width=True,
+            width="stretch",
         ):
 
             saved = (
@@ -512,7 +514,7 @@ def render_sidebar():
 
     if st.sidebar.button(
         "🔨 Build / Rebuild Database",
-        use_container_width=True,
+        width="stretch",
     ):
 
         with st.spinner(
@@ -542,7 +544,7 @@ def render_sidebar():
 
     if st.sidebar.button(
         "📂 Load Existing Database",
-        use_container_width=True,
+        width="stretch",
     ):
 
         with st.spinner(
@@ -576,7 +578,7 @@ def render_sidebar():
 
     if st.sidebar.button(
         "🗑️ Delete Vector Database",
-        use_container_width=True,
+        width="stretch",
     ):
 
         vector_path = Path(
@@ -612,7 +614,7 @@ def render_sidebar():
 
     if st.sidebar.button(
         "🧹 Clear RAG Chat",
-        use_container_width=True,
+        width="stretch",
     ):
 
         st.session_state.rag_chat_history = []
@@ -934,7 +936,7 @@ def render_retrieval_test():
 
         if st.button(
             "🔍 Search FAISS",
-            use_container_width=True,
+            width="stretch",
             key="retrieval_test_button",
         ):
 
@@ -1083,7 +1085,7 @@ def render_evaluation_dashboard(
 
         if st.button(
             "▶ Run RAG Evaluation",
-            use_container_width=True,
+            width="stretch",
             key="run_rag_evaluation",
         ):
 
@@ -1428,8 +1430,10 @@ def show():
 
     initialize_session_state()
 
-    st.title(
-        "📚 MathMind AI — RAG Assistant"
+    page_header(
+        "📚",
+        "Document Q&A",
+        "Upload PDFs and ask questions about them",
     )
 
     st.markdown(
@@ -1485,5 +1489,5 @@ def show():
 
             mime="text/plain",
 
-            use_container_width=True,
+            width="stretch",
         )

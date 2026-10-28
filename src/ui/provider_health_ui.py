@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.llm.provider_health import (
     SUPPORTED_PROVIDERS,
     check_provider_configuration,
@@ -9,13 +11,10 @@ from src.llm.provider_health import (
 
 def show():
 
-    st.title(
-        "🩺 LLM Provider Health Check"
-    )
-
-    st.caption(
-        "Check provider configuration and "
-        "model availability."
+    page_header(
+        "🩺",
+        "AI Provider Status",
+        "Which AI models are configured and ready",
     )
 
     st.info(
@@ -144,7 +143,7 @@ def show():
 
     if st.button(
         "🔄 Check Provider",
-        use_container_width=True,
+        width="stretch",
     ):
 
         result = (
@@ -193,7 +192,7 @@ def show():
 
     if st.button(
         "🔄 Refresh All Providers",
-        use_container_width=True,
+        width="stretch",
     ):
 
         st.rerun()

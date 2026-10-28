@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.ui.common import current_provider, page_header
+
 from src.core.unified_solver import UnifiedSolver
 
 
@@ -14,61 +16,41 @@ def show():
         Multi-Agent System
     """
 
-    st.title("🧠 MathMind AI — Unified Solver")
+    page_header(
+        "🧠",
+        "Ask MathMind",
+        "One box for every maths question",
+    )
 
     st.caption(
-        "One intelligent interface for mathematical reasoning"
+        "Type a question. MathMind picks the right engine: "
+        "calculator, algebra (SymPy), your documents (RAG) "
+        "or the Planner → Solver → Reviewer → Teacher agents."
     )
-
-    st.markdown(
-        """
-        ### 🚀 How it works
-
-        Enter any mathematical question.
-
-        MathMind AI automatically determines the
-        appropriate solving module:
-
-        **Question → Classifier → Solver → Answer**
-        """
-    )
-
-    st.divider()
 
     # ==========================================================
     # SETTINGS
     # ==========================================================
 
-    col1, col2 = st.columns(2)
+    provider = current_provider()
 
-    with col1:
-
-        provider = st.selectbox(
-            "🤖 LLM Provider",
-            [
-                "Gemini",
-                "OpenAI",
-                "Groq",
-                "Ollama",
-            ],
-            key="unified_provider",
-        )
-
-    with col2:
-
-        force_module = st.selectbox(
-            "⚙️ Solver Mode",
-            [
-                "Automatic",
-                "Calculator",
-                "Symbolic",
-                "RAG",
-                "Agent",
-            ],
-            key="unified_mode",
-        )
-
-    st.divider()
+    force_module = st.radio(
+        "⚙️ Solver Mode",
+        [
+            "Automatic",
+            "Calculator",
+            "Symbolic",
+            "RAG",
+            "Agent",
+        ],
+        horizontal=True,
+        key="unified_mode",
+        help=(
+            "Automatic picks the best engine. "
+            "RAG needs documents loaded on the "
+            "Document Q&A page."
+        ),
+    )
 
     # ==========================================================
     # QUESTION
@@ -94,7 +76,7 @@ def show():
 
         solve_button = st.button(
             "🚀 Solve",
-            use_container_width=True,
+            width="stretch",
             type="primary",
         )
 
@@ -102,7 +84,7 @@ def show():
 
         clear_button = st.button(
             "🗑️ Clear",
-            use_container_width=True,
+            width="stretch",
         )
 
     if clear_button:
@@ -135,8 +117,17 @@ def show():
             "🧠 MathMind AI is solving..."
         ):
 
+            rag_pipeline = st.session_state.get(
+                "rag_pipeline"
+            )
+
             solver = UnifiedSolver(
-                provider=provider
+                provider=provider,
+                vector_db=getattr(
+                    rag_pipeline,
+                    "vector_db",
+                    None,
+                ),
             )
 
             selected_module = None

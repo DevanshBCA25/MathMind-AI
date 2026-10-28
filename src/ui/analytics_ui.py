@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.analytics.analytics_engine import (
     AnalyticsEngine,
 )
@@ -9,12 +11,10 @@ from src.analytics.analytics_engine import (
 
 def show():
 
-    st.title(
-        "📊 MathMind AI — Analytics"
-    )
-
-    st.caption(
-        "Application usage and performance overview."
+    page_header(
+        "📉",
+        "Analytics",
+        "Application usage and performance overview",
     )
 
     analytics = AnalyticsEngine()
@@ -181,7 +181,7 @@ def show():
 
     if st.button(
         "Clear Analytics Data",
-        use_container_width=True,
+        width="stretch",
     ):
 
         analytics.clear_events()
