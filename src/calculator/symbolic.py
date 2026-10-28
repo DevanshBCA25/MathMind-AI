@@ -25,7 +25,7 @@ TRANSFORMATIONS = standard_transformations + (
 )
 
 
-def parse_math(expression):
+def parse_math(expression, evaluate=True):
     """
     Parse user input like "2x+3", "x^2 + 3x" or "sin x".
     """
@@ -38,6 +38,7 @@ def parse_math(expression):
             str(expression).strip(),
             local_dict={"e": E},
             transformations=TRANSFORMATIONS,
+            evaluate=evaluate,
         )
     except Exception as error:
         raise ValueError(

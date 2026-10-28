@@ -56,3 +56,44 @@ def test_statistics_input():
 
     with pytest.raises(ValueError):
         statistics.variance("5")
+
+
+def test_euler_number():
+
+    assert str(symbolic.integration("x e^x")) == "(x - 1)*exp(x)"
+
+
+def test_verification():
+
+    from src.calculator.steps import verify
+
+    solutions = symbolic.solve_equation("2x^2 + 3x - 5")
+
+    assert all(ok for ok, _ in verify("Solve Equation", "2x^2 + 3x - 5", solutions))
+
+    result = symbolic.integration("x e^x")
+
+    assert all(ok for ok, _ in verify("Integration", "x e^x", result))
+
+
+def test_practice_questions_check_their_own_answers():
+
+    from src.calculator import practice
+
+    for topic in practice.TOPICS:
+
+        for level in practice.LEVELS:
+
+            question = practice.generate(topic, level)
+
+            answer = question["answer"]
+
+            text = (
+                ", ".join(str(a) for a in answer)
+                if isinstance(answer, list)
+                else str(answer)
+            )
+
+            assert practice.check(question, text)
+
+            assert not practice.check(question, "12345")

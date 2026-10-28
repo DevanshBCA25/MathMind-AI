@@ -1,126 +1,169 @@
-import streamlit as st
+import io
 
-from src.ui.common import page_header
+import streamlit as st
 from PIL import Image
 
-from src.ocr.ocr_engine import extract_text
-from src.ocr.pdf_reader import read_pdf
+from src.ui.common import current_provider, page_header
+
+
+IMAGE_TYPES = ["png", "jpg", "jpeg", "bmp", "webp"]
+
+
+@st.cache_data(show_spinner=False)
+def ocr_image(data: bytes) -> str:
+
+    from src.ocr.ocr_engine import extract_text
+
+    image = Image.open(io.BytesIO(data)).convert("RGB")
+
+    return extract_text(image)
+
+
+@st.cache_data(show_spinner=False)
+def ocr_pdf(data: bytes) -> str:
+
+    from src.ocr.ocr_engine import extract_text
+    from src.ocr.pdf_reader import read_pdf
+
+    pages = read_pdf(io.BytesIO(data))
+
+    texts = []
+
+    for number, page in enumerate(pages, start=1):
+
+        text = extract_text(page)
+
+        if text and text.strip():
+            texts.append(f"--- Page {number} ---\n{text}")
+
+    return "\n\n".join(texts)
+
+
+def solve_section(text):
+    """
+    Let the user correct the OCR text, then solve it.
+    """
+
+    st.subheader("Extracted Text")
+
+    question = st.text_area(
+        "Check and correct the text if needed, then solve it",
+        text,
+        height=160,
+        key="ocr_question",
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        solve = st.button(
+            "🧠 Solve with MathMind",
+            type="primary",
+            width="stretch",
+        )
+
+    with col2:
+
+        st.download_button(
+            "⬇ Download text",
+            data=question,
+            file_name="ocr_text.txt",
+            width="stretch",
+        )
+
+    if not solve:
+        return
+
+    from src.core.unified_solver import UnifiedSolver
+
+    with st.spinner("Solving..."):
+
+        result = UnifiedSolver(
+            provider=current_provider()
+        ).solve(question)
+
+    details = result.get("result", {}) or {}
+
+    st.caption(
+        f"Solved with the **{result.get('module', '?')}** engine"
+    )
+
+    if details.get("latex"):
+        st.latex(details["latex"])
+
+    elif result.get("answer"):
+        st.markdown(result["answer"])
+
+    else:
+        st.warning(
+            details.get("message")
+            or "Could not solve this text. Try editing it above."
+        )
 
 
 def show():
+
     page_header(
         "📷",
         "Scan & Solve",
-        "Read a question from a photo or PDF",
+        "Read a question from a photo or PDF, then solve it",
     )
 
-    st.write(
-        "Upload an image or PDF and extract text using OCR."
+    source = st.radio(
+        "Input",
+        ["Upload a file", "Use camera"],
+        horizontal=True,
     )
 
-    uploaded_file = st.file_uploader(
-        "Upload Image or PDF",
-        type=[
-            "png",
-            "jpg",
-            "jpeg",
-            "bmp",
-            "webp",
-            "pdf",
-        ],
-    )
+    if source == "Use camera":
+
+        uploaded_file = st.camera_input(
+            "Take a clear photo of the question"
+        )
+
+    else:
+
+        uploaded_file = st.file_uploader(
+            "Upload Image or PDF",
+            type=IMAGE_TYPES + ["pdf"],
+        )
 
     if uploaded_file is None:
-        st.info("Upload an image or PDF to start OCR.")
+        st.info(
+            "Tip: crop the photo to just the question and use "
+            "good lighting for the best results."
+        )
         return
 
+    data = uploaded_file.getvalue()
+
+    name = (uploaded_file.name or "camera.jpg").lower()
+
     try:
-        file_name = uploaded_file.name.lower()
 
-        # ==================================================
-        # IMAGE
-        # ==================================================
-        if file_name.endswith(
-            (".png", ".jpg", ".jpeg", ".bmp", ".webp")
-        ):
+        if name.endswith(".pdf"):
 
-            st.subheader("Uploaded Image")
-
-            image = Image.open(uploaded_file).convert("RGB")
-
-            st.image(
-                image,
-                caption="Input Image",
-                width="stretch",
-            )
-
-            with st.spinner("Extracting text from image..."):
-                text = extract_text(image)
-
-            st.subheader("Extracted Text")
-
-            if text and text.strip():
-                st.text_area(
-                    "OCR Result",
-                    text,
-                    height=250,
-                )
-            else:
-                st.warning("No text detected in the image.")
-
-        # ==================================================
-        # PDF
-        # ==================================================
-        elif file_name.endswith(".pdf"):
-
-            st.subheader("Uploaded PDF")
-
-            with st.spinner("Reading PDF..."):
-                pages = read_pdf(uploaded_file)
-
-            st.success(
-                f"PDF loaded successfully: {len(pages)} page(s)"
-            )
-
-            all_text = []
-
-            for page_number, page_image in enumerate(pages, start=1):
-
-                st.markdown(f"### Page {page_number}")
-
-                st.image(
-                    page_image,
-                    caption=f"PDF Page {page_number}",
-                    width="stretch",
-                )
-
-                with st.spinner(
-                    f"Running OCR on page {page_number}..."
-                ):
-                    page_text = extract_text(page_image)
-
-                if page_text and page_text.strip():
-                    all_text.append(
-                        f"--- Page {page_number} ---\n"
-                        f"{page_text}"
-                    )
-
-            final_text = "\n\n".join(all_text)
-
-            st.subheader("Extracted Text")
-
-            if final_text.strip():
-                st.text_area(
-                    "OCR Result",
-                    final_text,
-                    height=400,
-                )
-            else:
-                st.warning("No text detected in the PDF.")
+            with st.spinner("Reading PDF with OCR (first run downloads the model)..."):
+                text = ocr_pdf(data)
 
         else:
-            st.error("Unsupported file type.")
+
+            col1, col2 = st.columns([1, 1])
+
+            with col1:
+                st.image(data, caption="Input image", width="stretch")
+
+            with col2:
+                with st.spinner("Reading text (first run downloads the model)..."):
+                    text = ocr_image(data)
+
+        if not text.strip():
+            st.warning("No text detected. Try a clearer or closer photo.")
+            return
+
+        solve_section(text)
 
     except Exception as e:
+
         st.error(f"OCR Error: {str(e)}")
-        st.exception(e)
