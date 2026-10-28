@@ -552,7 +552,9 @@ class UnifiedSolver:
 
             import sympy as sp
 
-            text = question.strip()
+            from src.calculator.symbolic import parse_math
+
+            text = question.strip().rstrip("?.")
 
             # --------------------------------------------------
             # Remove common command words
@@ -576,11 +578,11 @@ class UnifiedSolver:
                     1,
                 )
 
-                left_expr = sp.sympify(
+                left_expr = parse_math(
                     left.strip()
                 )
 
-                right_expr = sp.sympify(
+                right_expr = parse_math(
                     right.strip()
                 )
 
@@ -607,7 +609,9 @@ class UnifiedSolver:
                             left_expr,
                             right_expr,
                         ),
-                        symbols,
+                        symbols[0]
+                        if len(symbols) == 1
+                        else symbols,
                     )
 
                     answer = str(
@@ -618,6 +622,14 @@ class UnifiedSolver:
                     "status": "SUCCESS",
                     "module": "symbolic",
                     "answer": answer,
+                    "latex": (
+                        r",\quad ".join(
+                            f"{sp.latex(symbols[0])} = {sp.latex(s)}"
+                            for s in solutions
+                        )
+                        if len(symbols) == 1 and solutions
+                        else None
+                    ),
                 }
 
             # --------------------------------------------------
@@ -648,7 +660,7 @@ class UnifiedSolver:
                 flags=re.IGNORECASE,
             )
 
-            expression = sp.sympify(
+            expression = parse_math(
                 expression_text
             )
 
@@ -736,6 +748,9 @@ class UnifiedSolver:
                 "status": "SUCCESS",
                 "module": "symbolic",
                 "answer": str(
+                    simplified
+                ),
+                "latex": sp.latex(
                     simplified
                 ),
             }
@@ -935,6 +950,27 @@ class UnifiedSolver:
             result = self._symbolic(
                 question
             )
+
+            # Word problems like "explain the derivative of sin x"
+            # are not pure maths: let the agents answer them.
+            if (
+                not force_module
+                and result.get("status") != "SUCCESS"
+            ):
+
+                agent_result = self._agent(
+                    question
+                )
+
+                if agent_result.get("status") not in (
+                    "UNAVAILABLE",
+                    "API_ERROR",
+                    "ERROR",
+                ):
+
+                    module = "agent"
+
+                    result = agent_result
 
         elif module == "rag":
 

@@ -1,4 +1,5 @@
 from sympy import (
+    E,
     symbols,
     simplify,
     expand,
@@ -35,6 +36,7 @@ def parse_math(expression):
     try:
         return parse_expr(
             str(expression).strip(),
+            local_dict={"e": E},
             transformations=TRANSFORMATIONS,
         )
     except Exception as error:
