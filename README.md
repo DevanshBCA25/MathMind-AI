@@ -4,9 +4,12 @@
 
 [![Tests](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/tests.yml/badge.svg)](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b)
+![NiceGUI](https://img.shields.io/badge/UI-NiceGUI-5898d4)
+[![Deploy](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml/badge.svg)](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml)
 
-**Live demo:** https://mathmind-ai-devansh.streamlit.app/
+**Live demo:** _Hugging Face Space link goes here once deployed (see [Deploy](#-deploy-to-hugging-face-spaces-free))._
+
+The web interface is written entirely in Python with [NiceGUI](https://nicegui.io) (Vue/Quasar under the hood), so every page is a real web app: no full-page reruns, instant updates, and it works well on phones.
 
 ![Home page](docs/screenshots/home.png)
 
@@ -20,7 +23,8 @@
 - **Learn by doing.** *Practice Mode* generates unlimited questions at three levels and checks your answers instantly, with no AI key needed.
 - **Scan & Solve.** Take a photo of a question. OCR reads it, and MathMind solves it.
 - **Chat with your notes.** Upload PDFs and ask questions about them, with page-level sources (FAISS + sentence-transformers).
-- **Several AI providers.** Gemini, Groq, OpenAI, or a local Ollama, all chosen from one selector in the sidebar.
+- **Several AI providers.** Gemini, Groq, OpenAI, or a local Ollama, all chosen from one selector in the top bar.
+- **Real calculators.** On-screen keypads with exact answers (√8 = 2√2, sin 60° = √3/2) as well as decimals.
 
 ## 📸 Screenshots
 
@@ -28,9 +32,13 @@
 |---|---|
 | ![Algebra](docs/screenshots/algebra.png) | ![Practice](docs/screenshots/practice.png) |
 
-| Interactive graphs | Mobile |
+| Interactive graphs | Scientific calculator |
 |---|---|
-| ![Graph](docs/screenshots/graph.png) | <img src="docs/screenshots/mobile.png" width="260"> |
+| ![Graph](docs/screenshots/graph.png) | ![Calculator](docs/screenshots/calculator.png) |
+
+| Statistics with charts | Mobile |
+|---|---|
+| ![Statistics](docs/screenshots/statistics.png) | <img src="docs/screenshots/mobile.png" width="260"> |
 
 ## 🧩 Features
 
@@ -38,23 +46,23 @@
 |---|---|---|
 | **AI Solver** | Ask MathMind | Routes any question to the best engine and shows the agent steps |
 | | AI Tutor Chat | Step-by-step tutor that remembers the conversation; export the chat |
-| | Document Q&A | RAG over your PDFs: similarity or MMR retrieval, sources, confidence, evaluation dashboard |
+| | Document Q&A | RAG over your PDFs: upload, build a FAISS index, ask with similarity or MMR retrieval, see page-level sources |
 | **Learn** | Practice Mode | Arithmetic, linear and quadratic equations, derivatives and integrals, with hints and a score |
-| **Calculators** | Basic / Scientific | Arithmetic, powers, roots and trigonometry, with friendly errors |
+| **Calculators** | Basic / Scientific | Keypad calculators: type or tap whole expressions; trig in degrees or radians, logs, roots, factorials, `Ans`; exact and decimal answers |
 | | Algebra & Calculus | Simplify, expand, factor, solve, differentiate, integrate and take limits, with LaTeX output, rules used, verification and an AI explanation |
 | | Graph Plotter | Plotly graphs with zoom and hover, several functions, derivative curves, and breaks at asymptotes |
-| | Matrices / Linear Algebra | Determinant, inverse, rank, eigenvalues, LU/QR/SVD, and symmetric, orthogonal and positive-definite checks |
-| | Statistics | Mean, median, mode, variance, quartiles, IQR, z-scores and normalisation |
-| **Vision** | Scan & Solve | Camera or upload, EasyOCR on images and PDFs, then solve |
-| | Image Lab | OpenCV filters, thresholds, edges, morphology, contours and histograms |
-| **Insights** | My History | Your work in this session; download as CSV |
-| | Analytics / AI Provider Status | Usage metrics, and which providers are configured |
+| | Matrices / Linear Algebra | Results in matrix notation: determinant, inverse, rank, eigenvalues (as exact surds when possible), LU/QR/SVD, and symmetric, orthogonal and positive-definite checks |
+| | Statistics | All summary statistics at once, histogram and box plot, percentiles, correlation, z-scores and normalisation |
+| **Vision** | Scan & Solve | Photo (camera on phones) or PDF; uses the PDF's own text when it has one, EasyOCR otherwise; edit the text, then solve |
+| | Image Lab | OpenCV filters, thresholds, edges, morphology, contours and histograms, side by side; works on a built-in sample image too |
+| **Insights** | My History | Everything you did, saved in your browser: counts per tool, search, CSV download |
+| | AI Provider Status | Which AI providers are configured and ready |
 
 ## 🏗️ Architecture
 
 ```mermaid
 flowchart TD
-    U[User question / photo / PDF] --> UI[Streamlit UI<br/>st.navigation pages]
+    U[User question / photo / PDF] --> UI[NiceGUI web app<br/>webapp/pages]
     UI --> R{Unified Solver<br/>question router}
     R -->|arithmetic| C[Calculator]
     R -->|algebra / calculus| S[SymPy engine]
@@ -72,10 +80,13 @@ flowchart TD
 
 ```text
 MathMind-AI/
-├── app.py                  # Entry point: navigation, theme, provider selector
-├── assets/style.css        # Custom styling
+├── main.py                 # Entry point: python main.py → http://localhost:7860
+├── webapp/                 # NiceGUI web interface
+│   ├── layout.py           # Header, navigation drawer, theme, model selector
+│   ├── state.py            # Per-visitor history, chat and settings (browser storage)
+│   ├── widgets.py          # Maths rendering (LaTeX → MathML) and small UI pieces
+│   └── pages/              # One module per page (@ui.page routes)
 ├── src/
-│   ├── ui/                 # One module per page (+ pages.py registry, common.py)
 │   ├── calculator/         # Basic, scientific, symbolic, graph, matrix, stats,
 │   │                       # steps.py (verification), practice.py (quiz)
 │   ├── core/               # unified_solver.py: question router
@@ -87,6 +98,7 @@ MathMind-AI/
 │   └── tests/              # pytest suite
 ├── data/documents/         # Sample PDFs for RAG
 ├── docs/screenshots/
+├── .github/workflows/      # tests.yml (CI) · deploy-hf.yml (Hugging Face deploy)
 ├── Dockerfile  docker-compose.yml
 └── requirements.txt
 ```
@@ -100,7 +112,7 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env        # then add at least one API key
-streamlit run app.py
+python main.py              # open http://localhost:7860
 ```
 
 The calculators, graphs and Practice Mode work without any API key. The AI pages need a key for at least one provider:
@@ -112,12 +124,10 @@ The calculators, graphs and Practice Mode work without any API key. The AI pages
 | OpenAI | `OPENAI_API_KEY` | (paid) |
 | Ollama | `OLLAMA_BASE_URL` | Local only, no key |
 
-**Streamlit Cloud:** add the same keys under *App → Settings → Secrets*, for example `GEMINI_API_KEY = "..."`.
-
 **Docker:**
 
 ```bash
-docker compose up --build    # http://localhost:8501
+docker compose up --build    # http://localhost:7860
 ```
 
 **REST API:**
@@ -125,6 +135,23 @@ docker compose up --build    # http://localhost:8501
 ```bash
 uvicorn src.api.app:app --reload    # docs at http://localhost:8000/docs
 ```
+
+## ☁️ Deploy to Hugging Face Spaces (free)
+
+The app runs on a free Hugging Face Space (Docker, 2 vCPU, 16 GB RAM), which has room for OCR and the embedding model. Every push to `main` deploys automatically through `.github/workflows/deploy-hf.yml`.
+
+One-time setup:
+
+1. Create an account at [huggingface.co](https://huggingface.co/join).
+2. Create a Space: **New → Space**, name it `mathmind-ai`, choose **Docker → Blank**, hardware **CPU basic (free)**, visibility **Public**.
+3. In the Space, open **Settings → Variables and secrets** and add the secrets `GEMINI_API_KEY` (and any other provider keys) and `STORAGE_SECRET` (any long random text).
+4. Create a token at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) with the **Write** role.
+5. In this GitHub repository, open **Settings → Secrets and variables → Actions**:
+   - **Secrets** tab: add `HF_TOKEN` = the token from step 4.
+   - **Variables** tab: add `HF_SPACE` = `your-hf-username/mathmind-ai`.
+6. Open **Actions → Deploy to Hugging Face Spaces → Run workflow** (or push to `main`).
+
+The first build takes about 10 minutes. The app is then live at `https://your-hf-username-mathmind-ai.hf.space`.
 
 ## 🧪 Tests
 
@@ -137,14 +164,14 @@ GitHub Actions runs the test suite on every push and pull request.
 
 ## 🛠️ Tech stack
 
-Python · Streamlit · SymPy · NumPy · SciPy · pandas · Plotly · Matplotlib · OpenCV · EasyOCR · PyMuPDF · LangChain · FAISS · sentence-transformers · Gemini / Groq / OpenAI / Ollama · FastAPI · Docker · pytest · GitHub Actions
+Python · NiceGUI · SymPy · NumPy · SciPy · pandas · Plotly · Matplotlib · OpenCV · EasyOCR · PyMuPDF · LangChain · FAISS · sentence-transformers · Gemini / Groq / OpenAI / Ollama · FastAPI · Docker · Hugging Face Spaces · pytest · GitHub Actions
 
 ## ⚠️ Limitations
 
 - OCR works best on printed text. Handwriting and complex notation (fractions, matrices) may need editing before you solve.
 - LLM explanations can be wrong. That is why symbolic answers are verified with SymPy, and the AI only explains them.
-- The free Streamlit Cloud tier has limited memory. The first OCR or RAG run downloads models and takes longer.
-- History and uploaded documents last only for your browser session.
+- The first OCR or RAG run downloads models and takes longer. A free Space also sleeps after 48 hours without visitors and takes a minute to wake up.
+- History, chat and practice score are saved per browser on the server; uploaded documents last until the server restarts.
 
 ## 🔭 Future scope
 

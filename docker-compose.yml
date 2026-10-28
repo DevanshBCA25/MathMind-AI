@@ -8,17 +8,9 @@ services:
     container_name: mathmind-ai
 
     ports:
-      - "8501:8501"
+      - "7860:7860"
 
     env_file:
       - .env
 
     restart: unless-stopped
-
-    command:
-      - streamlit
-      - run
-      - app.py
-      - --server.address=0.0.0.0
-      - --server.port=8501
-      - --server.headless=true

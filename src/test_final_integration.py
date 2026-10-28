@@ -192,21 +192,21 @@ def test_imports():
 
     try:
 
-        import streamlit
+        import nicegui
 
         tests.append(
-            ("Streamlit", True)
+            ("NiceGUI", True)
         )
 
     except Exception as error:
 
         print(
-            "Streamlit Error:",
+            "NiceGUI Error:",
             error,
         )
 
         tests.append(
-            ("Streamlit", False)
+            ("NiceGUI", False)
         )
 
     # --------------------------------------------------

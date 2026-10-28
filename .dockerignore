@@ -14,7 +14,7 @@ __pycache__
 .idea
 
 .env
-.streamlit/secrets.toml
+.nicegui
 
 .pytest_cache
 .mypy_cache

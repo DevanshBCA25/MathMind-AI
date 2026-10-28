@@ -11,12 +11,6 @@ ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1
 
 # ==========================================================
-# WORKING DIRECTORY
-# ==========================================================
-
-WORKDIR /app
-
-# ==========================================================
 # SYSTEM DEPENDENCIES
 # ==========================================================
 
@@ -31,28 +25,42 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # ==========================================================
-# PYTHON DEPENDENCIES
+# NON-ROOT USER (required by Hugging Face Spaces)
 # ==========================================================
 
-COPY requirements.txt .
+RUN useradd -m -u 1000 user
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+USER user
+
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
+WORKDIR $HOME/app
+
+# ==========================================================
+# PYTHON DEPENDENCIES
+# CPU-only PyTorch keeps the image several GB smaller.
+# ==========================================================
+
+COPY --chown=user requirements.txt .
+
+RUN pip install --user --upgrade pip \
+    && pip install --user \
+        --extra-index-url https://download.pytorch.org/whl/cpu \
+        -r requirements.txt
 
 # ==========================================================
 # PROJECT FILES
 # ==========================================================
 
-COPY . .
+COPY --chown=user . .
 
 # ==========================================================
-# STREAMLIT
+# START APPLICATION (NiceGUI)
 # ==========================================================
 
-EXPOSE 8501
+ENV PORT=7860
 
-# ==========================================================
-# START APPLICATION
-# ==========================================================
+EXPOSE 7860
 
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501", "--server.headless=true"]
+CMD ["python", "main.py"]

@@ -1,0 +1,57 @@
+name: Deploy to Hugging Face Spaces
+
+# Publishes the app to a Hugging Face Space every time main changes.
+# Setup (once): add the repository secret HF_TOKEN (a Hugging Face
+# token with write access) and the repository variable HF_SPACE
+# (for example "your-hf-username/mathmind-ai"). See the README.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hf
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: vars.HF_SPACE != ''
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Space contents
+        run: |
+          rm -rf .git .github
+          {
+            echo "---"
+            echo "title: MathMind AI"
+            echo "emoji: 🧠"
+            echo "colorFrom: indigo"
+            echo "colorTo: purple"
+            echo "sdk: docker"
+            echo "app_port: 7860"
+            echo "pinned: false"
+            echo "short_description: AI maths companion - solve, explain, practise"
+            echo "---"
+            echo
+            cat README.md
+          } > README.space.md
+          mv README.space.md README.md
+
+      - name: Push to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          git init -b main
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git lfs install --local
+          git lfs track "*.pdf" "*.png" "*.jpg" "*.jpeg" "*.gif" "*.webp"
+          git add .gitattributes .
+          git commit -q -m "Deploy ${GITHUB_SHA::7} from GitHub"
+          HF_USER="${HF_SPACE%%/*}"
+          git push --force "https://${HF_USER}:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" main
