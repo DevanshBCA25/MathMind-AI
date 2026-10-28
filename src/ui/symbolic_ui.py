@@ -54,25 +54,31 @@ def show():
 
     if st.button("Calculate", key="symbolic_button"):
 
-        if operation == "Simplify":
-            result = simplify_expression(expression)
+        try:
 
-        elif operation == "Expand":
-            result = expand_expression(expression)
+            if operation == "Simplify":
+                result = simplify_expression(expression)
 
-        elif operation == "Factor":
-            result = factor_expression(expression)
+            elif operation == "Expand":
+                result = expand_expression(expression)
 
-        elif operation == "Solve Equation":
-            result = solve_equation(expression, right_side)
+            elif operation == "Factor":
+                result = factor_expression(expression)
 
-        elif operation == "Derivative":
-            result = derivative(expression)
+            elif operation == "Solve Equation":
+                result = solve_equation(expression, right_side)
 
-        elif operation == "Integration":
-            result = integration(expression)
+            elif operation == "Derivative":
+                result = derivative(expression)
 
-        else:
-            result = calculate_limit(expression, limit_value)
+            elif operation == "Integration":
+                result = integration(expression)
 
-        st.success(f"Result : {result}")
+            else:
+                result = calculate_limit(expression, limit_value)
+
+            st.success(f"Result : {result}")
+
+        except Exception as error:
+
+            st.error(f"Error: {error}")

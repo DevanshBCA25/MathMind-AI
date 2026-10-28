@@ -2,6 +2,18 @@ from typing import Any, Dict, Optional
 import re
 
 
+def has_keyword(text: str, keyword: str) -> bool:
+    """
+    Match whole words only, so "mean" does not match "meaning"
+    and "add" does not match "address".
+    """
+
+    return re.search(
+        rf"\b{re.escape(keyword)}\b",
+        text,
+    ) is not None
+
+
 class UnifiedSolver:
     """
     Unified entry point for MathMind-AI.
@@ -155,7 +167,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in rag_keywords
         ):
 
@@ -179,7 +191,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in matrix_keywords
         ):
 
@@ -205,7 +217,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in statistics_keywords
         ):
 
@@ -252,7 +264,7 @@ class UnifiedSolver:
             return "symbolic"
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in symbolic_keywords
         ):
 
@@ -274,7 +286,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in graph_keywords
         ):
 
@@ -301,7 +313,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in calculator_keywords
         ):
 
@@ -315,9 +327,15 @@ class UnifiedSolver:
             r"^[0-9\s\+\-\*\/\(\)\.\^]+$"
         )
 
+        arithmetic = re.sub(
+            r"^(what is|what's|calculate)\s+",
+            "",
+            q,
+        ).rstrip("?").strip()
+
         if re.fullmatch(
             expression_pattern,
-            q,
+            arithmetic,
         ):
 
             return "calculator"
@@ -340,7 +358,7 @@ class UnifiedSolver:
         ]
 
         if any(
-            keyword in q
+            has_keyword(q, keyword)
             for keyword in reasoning_keywords
         ):
 
@@ -417,6 +435,32 @@ class UnifiedSolver:
                 r"(-?\d+(?:\.\d+)?)\s*",
                 expression,
             )
+
+            if not match and re.fullmatch(
+                r"[0-9\s\+\-\*\/\(\)\.\^]+",
+                expression.rstrip("?"),
+            ):
+
+                # Longer expressions like 2+3*4 or (5+3)^2
+                from src.calculator.symbolic import parse_math
+
+                value = parse_math(
+                    expression.rstrip("?")
+                )
+
+                if not value.is_number:
+                    raise ValueError("Not a numeric expression.")
+
+                result = float(value.evalf())
+
+                if result.is_integer():
+                    result = int(result)
+
+                return {
+                    "status": "SUCCESS",
+                    "module": "calculator",
+                    "answer": str(result),
+                }
 
             if not match:
 

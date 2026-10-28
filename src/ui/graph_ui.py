@@ -27,9 +27,15 @@ def show():
 
         if st.button("Plot"):
 
-            fig = plot_function(expression)
+            try:
 
-            st.pyplot(fig)
+                fig = plot_function(expression)
+
+                st.pyplot(fig)
+
+            except Exception as error:
+
+                st.error(f"Could not plot: {error}")
 
     else:
 
@@ -42,6 +48,12 @@ def show():
 
             expressions = expression.split("\n")
 
-            fig = plot_multiple(expressions)
+            try:
 
-            st.pyplot(fig)
+                fig = plot_multiple(expressions)
+
+                st.pyplot(fig)
+
+            except Exception as error:
+
+                st.error(f"Could not plot: {error}")

@@ -83,81 +83,87 @@ def show():
 
     if st.button("Calculate"):
 
-        if operation == "Addition":
+        try:
 
-            result = matrix_add(
-                create_matrix(matrix1),
-                create_matrix(matrix2),
-            )
+            if operation == "Addition":
 
-        elif operation == "Subtraction":
+                result = matrix_add(
+                    create_matrix(matrix1),
+                    create_matrix(matrix2),
+                )
 
-            result = matrix_subtract(
-                create_matrix(matrix1),
-                create_matrix(matrix2),
-            )
+            elif operation == "Subtraction":
 
-        elif operation == "Multiplication":
+                result = matrix_subtract(
+                    create_matrix(matrix1),
+                    create_matrix(matrix2),
+                )
 
-            result = matrix_multiply(
-                create_matrix(matrix1),
-                create_matrix(matrix2),
-            )
+            elif operation == "Multiplication":
 
-        elif operation == "Transpose":
+                result = matrix_multiply(
+                    create_matrix(matrix1),
+                    create_matrix(matrix2),
+                )
 
-            result = matrix_transpose(
-                create_matrix(matrix1)
-            )
+            elif operation == "Transpose":
 
-        elif operation == "Determinant":
+                result = matrix_transpose(
+                    create_matrix(matrix1)
+                )
 
-            result = matrix_determinant(
-                create_matrix(matrix1)
-            )
+            elif operation == "Determinant":
 
-        elif operation == "Inverse":
+                result = matrix_determinant(
+                    create_matrix(matrix1)
+                )
 
-            result = matrix_inverse(
-                create_matrix(matrix1)
-            )
+            elif operation == "Inverse":
 
-        elif operation == "Rank":
+                result = matrix_inverse(
+                    create_matrix(matrix1)
+                )
 
-            result = matrix_rank(
-                create_matrix(matrix1)
-            )
+            elif operation == "Rank":
 
-        elif operation == "Eigen Values":
+                result = matrix_rank(
+                    create_matrix(matrix1)
+                )
 
-            values, vectors = matrix_eigen(
-                create_matrix(matrix1)
-            )
+            elif operation == "Eigen Values":
 
-            st.write("Eigen Values")
-            st.write(values)
+                values, vectors = matrix_eigen(
+                    create_matrix(matrix1)
+                )
 
-            st.write("Eigen Vectors")
-            st.write(vectors)
+                st.write("Eigen Values")
+                st.write(values)
 
-            return
+                st.write("Eigen Vectors")
+                st.write(vectors)
 
-        elif operation == "Scalar Multiplication":
+                return
 
-            result = scalar_multiply(
-                create_matrix(matrix1),
-                scalar,
-            )
+            elif operation == "Scalar Multiplication":
 
-        elif operation == "Identity Matrix":
+                result = scalar_multiply(
+                    create_matrix(matrix1),
+                    scalar,
+                )
 
-            result = identity_matrix(size)
+            elif operation == "Identity Matrix":
 
-        else:
+                result = identity_matrix(size)
 
-            result = zero_matrix(
-                rows,
-                cols,
-            )
+            else:
 
-        st.write(result)
+                result = zero_matrix(
+                    rows,
+                    cols,
+                )
+
+            st.write(result)
+
+        except Exception as error:
+
+            st.error(f"Error: {error}")

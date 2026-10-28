@@ -11,7 +11,7 @@ class GeminiProvider:
         self.api_key = os.getenv("GEMINI_API_KEY")
         self.model = os.getenv(
             "GEMINI_MODEL",
-            "gemini-2.0-flash",
+            "gemini-2.5-flash",
         )
 
     def generate_response(self, prompt: str) -> str:

@@ -1,16 +1,53 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sympy import symbols, sympify, lambdify
+from sympy import lambdify
 
-x = symbols("x")
+from src.calculator.symbolic import parse_math, main_variable
+
+
+def evaluate(expression, x_values):
+    """
+    Evaluate an expression on x_values.
+
+    Handles constant functions and breaks the line at
+    asymptotes (e.g. 1/x) instead of joining them.
+    """
+
+    expr = parse_math(expression)
+
+    f = lambdify(main_variable(expr), expr, "numpy")
+
+    with np.errstate(all="ignore"):
+        y_values = np.asarray(f(x_values), dtype=complex)
+
+    y_values = np.broadcast_to(y_values, x_values.shape)
+
+    # Keep only real values (sqrt/log of negatives become gaps).
+    y_values = np.where(
+        np.abs(y_values.imag) < 1e-9,
+        y_values.real,
+        np.nan,
+    )
+
+    finite = y_values[np.isfinite(y_values)]
+
+    if finite.size > 1:
+
+        low, high = np.percentile(finite, [1, 99])
+
+        spread = max(high - low, 1e-9)
+
+        jumps = np.abs(np.diff(y_values)) > spread
+
+        y_values[1:][jumps] = np.nan
+
+    return y_values
 
 
 def plot_function(expression):
-    expr = sympify(expression)
-    f = lambdify(x, expr, "numpy")
 
     x_values = np.linspace(-10, 10, 500)
-    y_values = f(x_values)
+    y_values = evaluate(expression, x_values)
 
     fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -34,11 +71,10 @@ def plot_multiple(expressions):
 
     for exp in expressions:
 
-        expr = sympify(exp)
+        if not exp.strip():
+            continue
 
-        f = lambdify(x, expr, "numpy")
-
-        y = f(x_values)
+        y = evaluate(exp, x_values)
 
         ax.plot(x_values, y, label=exp)
 
