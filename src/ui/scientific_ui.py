@@ -30,19 +30,25 @@ def show():
 
     if st.button("Calculate", key="sci_button"):
 
-        if operation == "Power":
-            result = power(num1, num2)
+        try:
 
-        elif operation == "Square Root":
-            result = square_root(num1)
+            if operation == "Power":
+                result = power(num1, num2)
 
-        elif operation == "Sin":
-            result = sine(num1)
+            elif operation == "Square Root":
+                result = square_root(num1)
 
-        elif operation == "Cos":
-            result = cosine(num1)
+            elif operation == "Sin":
+                result = sine(num1)
 
-        else:
-            result = tangent(num1)
+            elif operation == "Cos":
+                result = cosine(num1)
 
-        st.success(f"Result : {result}")
+            else:
+                result = tangent(num1)
+
+            st.success(f"Result : {result}")
+
+        except Exception as error:
+
+            st.error(f"Error: {error}")

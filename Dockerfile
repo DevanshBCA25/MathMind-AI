@@ -55,11 +55,4 @@ EXPOSE 8501
 # START APPLICATION
 # ==========================================================
 
-CMD [
-    "streamlit",
-    "run",
-    "app.py",
-    "--server.address=0.0.0.0",
-    "--server.port=8501",
-    "--server.headless=true"
-]
+CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501", "--server.headless=true"]

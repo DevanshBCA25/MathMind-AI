@@ -22,16 +22,22 @@ def show():
 
     if st.button("Calculate", key="basic_button"):
 
-        if operation == "Addition":
-            result = add(num1, num2)
+        try:
 
-        elif operation == "Subtraction":
-            result = subtract(num1, num2)
+            if operation == "Addition":
+                result = add(num1, num2)
 
-        elif operation == "Multiplication":
-            result = multiply(num1, num2)
+            elif operation == "Subtraction":
+                result = subtract(num1, num2)
 
-        else:
-            result = divide(num1, num2)
+            elif operation == "Multiplication":
+                result = multiply(num1, num2)
 
-        st.success(f"Result : {result}")
+            else:
+                result = divide(num1, num2)
+
+            st.success(f"Result : {result}")
+
+        except Exception as error:
+
+            st.error(f"Error: {error}")

@@ -1,3 +1,4 @@
+import re
 import statistics
 import numpy as np
 import pandas as pd
@@ -5,7 +6,17 @@ import pandas as pd
 
 def get_numbers(data):
 
-    numbers = [float(i.strip()) for i in data.split(",") if i.strip() != ""]
+    parts = [i for i in re.split(r"[,\s]+", data.strip()) if i]
+
+    try:
+        numbers = [float(i) for i in parts]
+    except ValueError as error:
+        raise ValueError(
+            "Please enter only numbers, separated by commas or spaces."
+        ) from error
+
+    if not numbers:
+        raise ValueError("Please enter at least one number.")
 
     return numbers
 
@@ -19,15 +30,35 @@ def median(data):
 
 
 def mode(data):
-    return statistics.mode(get_numbers(data))
+
+    numbers = get_numbers(data)
+
+    modes = statistics.multimode(numbers)
+
+    if len(modes) == len(set(numbers)) and len(set(numbers)) > 1:
+        return "No mode (every value appears equally often)"
+
+    return modes[0] if len(modes) == 1 else modes
 
 
 def variance(data):
-    return statistics.variance(get_numbers(data))
+
+    numbers = get_numbers(data)
+
+    if len(numbers) < 2:
+        raise ValueError("Variance needs at least two numbers.")
+
+    return statistics.variance(numbers)
 
 
 def standard_deviation(data):
-    return statistics.stdev(get_numbers(data))
+
+    numbers = get_numbers(data)
+
+    if len(numbers) < 2:
+        raise ValueError("Standard deviation needs at least two numbers.")
+
+    return statistics.stdev(numbers)
 
 
 def minimum(data):
