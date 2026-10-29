@@ -1,34 +1,19 @@
 """
-Per-user calculation history.
+Calculation history for scripts and the command line.
 
-History is kept in the user's Streamlit session, so on a shared
-deployment every visitor sees only their own work. Outside Streamlit
-(tests, scripts) an in-memory list is used instead.
+The web app keeps each visitor's history in their own browser storage
+(see webapp/state.py); this module is a simple in-memory store for
+code that runs outside the web app.
 """
 
-_fallback_history = []
-
-HISTORY_KEY = "mathmind_history"
+_history = []
 
 MAX_RECORDS = 200
 
 
 def _store():
 
-    try:
-        import streamlit as st
-        from streamlit.runtime.scriptrunner import get_script_run_ctx
-
-        if get_script_run_ctx() is None:
-            return _fallback_history
-
-        if HISTORY_KEY not in st.session_state:
-            st.session_state[HISTORY_KEY] = []
-
-        return st.session_state[HISTORY_KEY]
-
-    except Exception:
-        return _fallback_history
+    return _history
 
 
 def load_history():

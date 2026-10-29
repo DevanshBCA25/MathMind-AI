@@ -112,3 +112,5 @@ dist/
 *.key
 credentials.json
 service-account.json
+# NiceGUI storage
+.nicegui/

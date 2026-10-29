@@ -97,3 +97,32 @@ def test_practice_questions_check_their_own_answers():
             assert practice.check(question, text)
 
             assert not practice.check(question, "12345")
+
+
+def test_keypad_expressions_give_exact_and_decimal_answers():
+
+    import pytest
+    from sympy import sqrt
+
+    from src.calculator.scientific import evaluate_expression
+
+    assert evaluate_expression("2(3+4)^2") == (98, 98.0)
+    assert evaluate_expression("12 × (3 + 4) ÷ 2")[1] == 42.0
+    assert evaluate_expression("√8")[0] == 2 * sqrt(2)
+    assert evaluate_expression("sin 30", degrees=True)[1] == pytest.approx(0.5)
+    assert evaluate_expression("5!")[0] == 120
+    assert evaluate_expression("log 1000")[0] == 3
+    assert evaluate_expression("50%")[1] == 0.5
+
+    for bad in ["1/0", "x + 1", "2 +* 3", ""]:
+        with pytest.raises(ValueError):
+            evaluate_expression(bad)
+
+
+def test_history_shows_latex_as_readable_text():
+
+    from webapp.state import plain_text
+
+    assert plain_text(r"\begin{matrix}19 & 22\\43 & 50\end{matrix}") == "[19, 22; 43, 50]"
+    assert plain_text(r"\frac{\sqrt{5}}{2}") == "(√(5))/(2)"
+    assert plain_text("x**2 + 1") == "x**2 + 1"

@@ -18,33 +18,6 @@ load_dotenv(
 )
 
 
-def _load_streamlit_secrets() -> None:
-    """
-    Copy Streamlit Cloud secrets into environment variables,
-    so the same os.getenv() calls work locally and in the cloud.
-    """
-
-    try:
-
-        import streamlit as st
-
-        for key, value in st.secrets.items():
-
-            if isinstance(value, (str, int, float)):
-
-                os.environ.setdefault(
-                    key,
-                    str(value),
-                )
-
-    except Exception:
-
-        pass
-
-
-_load_streamlit_secrets()
-
-
 # ============================================================
 # DIRECTORIES
 # ============================================================
