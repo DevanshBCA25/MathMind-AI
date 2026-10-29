@@ -39,6 +39,7 @@ HOME = _page("home_ui", "Home", "🏠", None, default=True)
 ASK = _page("unified_solver_ui", "Ask MathMind", "🧠", "ask")
 CHAT = _page("ai_chat_ui", "AI Tutor Chat", "💬", "chat")
 DOCS = _page("rag_ui", "Document Q&A", "📚", "documents")
+PRACTICE = _page("practice_ui", "Practice Mode", "🎯", "practice")
 
 BASIC = _page("basic_ui", "Basic Calculator", "➕", "basic")
 SCIENTIFIC = _page("scientific_ui", "Scientific Calculator", "🔬", "scientific")
@@ -59,6 +60,7 @@ HEALTH = _page("provider_health_ui", "AI Provider Status", "🩺", "status")
 NAVIGATION = {
     "": [HOME],
     "AI Solver": [ASK, CHAT, DOCS],
+    "Learn": [PRACTICE],
     "Calculators": [BASIC, SCIENTIFIC, SYMBOLIC, GRAPH, MATRIX, LINEAR, STATS],
     "Vision": [OCR, VISION],
     "Insights": [HISTORY, ANALYTICS, HEALTH],

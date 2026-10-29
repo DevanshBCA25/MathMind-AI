@@ -227,7 +227,15 @@ def show():
             "",
         )
 
-        if answer:
+        latex = (
+            result.get("result", {}) or {}
+        ).get("latex")
+
+        if latex:
+
+            st.latex(latex)
+
+        elif answer:
 
             st.markdown(
                 str(answer)
