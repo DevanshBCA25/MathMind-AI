@@ -1,8 +1,6 @@
 import os
 
-from dotenv import load_dotenv
-
-load_dotenv()
+import src.config.settings  # noqa: F401  (loads .env and Streamlit secrets)
 
 
 class OpenAIProvider:

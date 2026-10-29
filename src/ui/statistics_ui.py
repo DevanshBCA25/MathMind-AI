@@ -1,10 +1,17 @@
 import streamlit as st
 
+from src.ui.common import page_header
+from src.utils.helpers import save_operation
+
 from src.calculator.statistics import *
 
 def show():
 
-    st.header("📊 Statistics & Data Analysis")
+    page_header(
+        "📊",
+        "Statistics",
+        "Enter numbers separated by commas or spaces",
+    )
 
     data = st.text_area(
         "Enter Numbers (comma separated)",
@@ -41,7 +48,7 @@ def show():
             value=50
         )
 
-    if st.button("Calculate"):
+    if st.button("Calculate", type="primary"):
 
         try:
 
@@ -88,6 +95,13 @@ def show():
                 result = standardize(data)
 
             st.success(result)
+
+            save_operation(
+                module="Statistics",
+                operation=operation,
+                input_data=data,
+                result=result,
+            )
 
             st.subheader("Dataset")
 

@@ -1,11 +1,17 @@
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.calculator.linear_algebra import *
 
 
 def show():
 
-    st.header("🧮 Advanced Linear Algebra")
+    page_header(
+        "🧮",
+        "Linear Algebra",
+        "Rank, decompositions, eigenvalues and matrix checks",
+    )
 
     matrix = st.text_area(
         "Enter Matrix (space separated)",
@@ -33,7 +39,7 @@ def show():
         ],
     )
 
-    if st.button("Compute"):
+    if st.button("Compute", type="primary"):
 
         try:
 

@@ -1,5 +1,8 @@
 import streamlit as st
 
+from src.ui.common import page_header
+from src.utils.helpers import save_operation
+
 from src.calculator.symbolic import (
     simplify_expression,
     expand_expression,
@@ -13,7 +16,11 @@ from src.calculator.symbolic import (
 
 def show():
 
-    st.header("Symbolic Mathematics")
+    page_header(
+        "∫",
+        "Algebra & Calculus",
+        "Write maths naturally: 2x^2 + 3x - 5, sin(x)/x",
+    )
 
     operation = st.selectbox(
         "Choose Operation",
@@ -52,7 +59,7 @@ def show():
             key="limit_value",
         )
 
-    if st.button("Calculate", key="symbolic_button"):
+    if st.button("Calculate", key="symbolic_button", type="primary"):
 
         try:
 
@@ -78,6 +85,13 @@ def show():
                 result = calculate_limit(expression, limit_value)
 
             st.success(f"Result : {result}")
+
+            save_operation(
+                module="Algebra & Calculus",
+                operation=operation,
+                input_data=expression,
+                result=result,
+            )
 
         except Exception as error:
 

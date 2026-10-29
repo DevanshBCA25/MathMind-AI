@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.calculator.graph import (
     plot_function,
     plot_multiple,
@@ -8,7 +10,11 @@ from src.calculator.graph import (
 
 def show():
 
-    st.header("📈 Graph Visualization")
+    page_header(
+        "📈",
+        "Graph Plotter",
+        "Plot functions of x. Use ^ for powers, e.g. x^2 - 3x",
+    )
 
     option = st.selectbox(
         "Graph Type",
@@ -25,7 +31,7 @@ def show():
             "x**2",
         )
 
-        if st.button("Plot"):
+        if st.button("Plot", type="primary"):
 
             try:
 
@@ -44,7 +50,7 @@ def show():
             "x\nx**2\nsin(x)",
         )
 
-        if st.button("Plot"):
+        if st.button("Plot", type="primary"):
 
             expressions = expression.split("\n")
 

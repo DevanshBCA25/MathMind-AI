@@ -1,0 +1,131 @@
+/* ---------- Layout ---------- */
+
+.block-container {
+    padding-top: 3.5rem;
+    max-width: 1200px;
+}
+
+#MainMenu, footer {
+    visibility: hidden;
+}
+
+/* ---------- Page header ---------- */
+
+.mm-page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #db2777 100%);
+    color: #ffffff;
+}
+
+.mm-page-header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.7rem;
+    color: #ffffff;
+}
+
+.mm-page-header p {
+    margin: 0.2rem 0 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.mm-page-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+/* ---------- Home hero ---------- */
+
+.mm-hero {
+    padding: 2.6rem 2rem;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.18), transparent 40%),
+        linear-gradient(135deg, #312e81 0%, #4f46e5 45%, #7c3aed 100%);
+    color: #ffffff;
+    margin-bottom: 1.8rem;
+}
+
+.mm-hero h1 {
+    font-size: 2.6rem;
+    margin: 0 0 0.4rem;
+    color: #ffffff;
+}
+
+.mm-hero p {
+    font-size: 1.1rem;
+    max-width: 720px;
+    opacity: 0.92;
+    margin: 0;
+}
+
+.mm-badges {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.mm-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 0.85rem;
+}
+
+/* ---------- Feature cards ---------- */
+
+.mm-card {
+    height: 100%;
+    padding: 1.2rem 1.2rem 0.8rem;
+    border-radius: 16px;
+    border: 1px solid rgba(79, 70, 229, 0.15);
+    background: rgba(79, 70, 229, 0.04);
+    margin-bottom: 0.4rem;
+}
+
+.mm-card h3 {
+    margin: 0.3rem 0;
+    font-size: 1.1rem;
+}
+
+.mm-card p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    min-height: 2.6rem;
+}
+
+.mm-card-icon {
+    font-size: 1.8rem;
+}
+
+/* ---------- Answers ---------- */
+
+.mm-answer {
+    padding: 1rem 1.2rem;
+    border-left: 4px solid #4f46e5;
+    border-radius: 10px;
+    background: rgba(79, 70, 229, 0.06);
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 640px) {
+    .mm-hero {
+        padding: 1.6rem 1.2rem;
+    }
+
+    .mm-hero h1 {
+        font-size: 1.9rem;
+    }
+
+    .mm-page-header h1 {
+        font-size: 1.3rem;
+    }
+}

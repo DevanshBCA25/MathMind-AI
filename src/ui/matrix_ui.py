@@ -1,10 +1,16 @@
 import streamlit as st
 
+from src.ui.common import page_header
+
 from src.calculator.matrix import *
 
 def show():
 
-    st.header("Matrix Mathematics")
+    page_header(
+        "🔢",
+        "Matrices",
+        "Write one row per line, numbers separated by spaces",
+    )
 
     operation = st.selectbox(
         "Operation",
@@ -81,7 +87,7 @@ def show():
             value=2.0,
         )
 
-    if st.button("Calculate"):
+    if st.button("Calculate", type="primary"):
 
         try:
 

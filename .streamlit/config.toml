@@ -21,3 +21,11 @@ gatherUsageStats = false
 [theme]
 
 base = "light"
+
+primaryColor = "#4f46e5"
+
+backgroundColor = "#ffffff"
+
+secondaryBackgroundColor = "#f4f3ff"
+
+textColor = "#1e1b4b"

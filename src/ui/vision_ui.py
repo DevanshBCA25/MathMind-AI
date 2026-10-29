@@ -1,4 +1,6 @@
 import streamlit as st
+
+from src.ui.common import page_header
 import cv2
 import numpy as np
 from io import BytesIO
@@ -57,7 +59,11 @@ from src.utils.helpers import (
 
 def show():
 
-    st.title("🖼️ Computer Vision")
+    page_header(
+        "🖼️",
+        "Image Lab",
+        "Image processing with OpenCV",
+    )
 
     uploaded_file = st.file_uploader(
         "Upload Image",
@@ -248,7 +254,7 @@ def show():
 
             st.image(
                 convert_rgb(image),
-                use_container_width=True,
+                width="stretch",
             )
 
         with col2:
@@ -260,14 +266,14 @@ def show():
                 st.image(
                     output,
                     clamp=True,
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             else:
 
                 st.image(
                     convert_rgb(output),
-                    use_container_width=True,
+                    width="stretch",
                 )
 
         save_operation(

@@ -1,38 +1,55 @@
-import json
-from pathlib import Path
+"""
+Per-user calculation history.
 
-HISTORY_FILE = Path("data/history.json")
+History is kept in the user's Streamlit session, so on a shared
+deployment every visitor sees only their own work. Outside Streamlit
+(tests, scripts) an in-memory list is used instead.
+"""
 
-HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+_fallback_history = []
 
-if not HISTORY_FILE.exists():
-    HISTORY_FILE.write_text("[]")
+HISTORY_KEY = "mathmind_history"
+
+MAX_RECORDS = 200
+
+
+def _store():
+
+    try:
+        import streamlit as st
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+
+        if get_script_run_ctx() is None:
+            return _fallback_history
+
+        if HISTORY_KEY not in st.session_state:
+            st.session_state[HISTORY_KEY] = []
+
+        return st.session_state[HISTORY_KEY]
+
+    except Exception:
+        return _fallback_history
 
 
 def load_history():
 
-    with open(HISTORY_FILE, "r") as file:
-        return json.load(file)
+    return list(_store())
 
 
 def save_history(record):
 
-    history = load_history()
+    history = _store()
 
     history.append(record)
 
-    with open(HISTORY_FILE, "w") as file:
-        json.dump(history, file, indent=4)
+    del history[:-MAX_RECORDS]
 
 
 def clear_history():
 
-    with open(HISTORY_FILE, "w") as file:
-        json.dump([], file)
+    _store().clear()
 
 
 def latest_records(limit=10):
 
-    history = load_history()
-
-    return history[-limit:]
+    return load_history()[-limit:]
