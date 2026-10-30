@@ -7,7 +7,7 @@
 ![NiceGUI](https://img.shields.io/badge/UI-NiceGUI-5898d4)
 [![Deploy](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml/badge.svg)](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml)
 
-**Live demo:** _Hugging Face Space link goes here once deployed (see [Deploy](#-deploy-to-hugging-face-spaces-free))._
+**Live demo:** _link goes here once deployed (see [Deploy](#-deploy-on-render-free-easiest))._
 
 The web interface is written entirely in Python with [NiceGUI](https://nicegui.io) (Vue/Quasar under the hood), so every page is a real web app: no full-page reruns, instant updates, and it works well on phones.
 
@@ -136,7 +136,18 @@ docker compose up --build    # http://localhost:7860
 uvicorn src.api.app:app --reload    # docs at http://localhost:8000/docs
 ```
 
-## ☁️ Deploy to Hugging Face Spaces (free)
+## ☁️ Deploy on Render (free, easiest)
+
+`render.yaml` sets everything up. Render's free server has 512 MB of memory, so it installs the lighter `requirements-render.txt`. On Render, Scan & Solve reads PDFs that contain real text (no OCR on photos), and Document Q&A uses Gemini embeddings. Everything else works fully.
+
+1. Sign in at [render.com](https://render.com) with GitHub. No card is needed.
+2. Click **New → Blueprint**, pick this repository, and click **Apply**.
+3. When it asks for `GEMINI_API_KEY`, paste your key ([free key](https://aistudio.google.com/apikey)). `GROQ_API_KEY` is optional.
+4. Wait for the first build (about 5 to 10 minutes). The app is then live at `https://mathmind-ai-xxxx.onrender.com`.
+
+Every push to `main` redeploys. A free Render app sleeps after 15 minutes without visitors and takes about a minute to wake up.
+
+## ☁️ Deploy to Hugging Face Spaces (free, full features)
 
 The app runs on a free Hugging Face Space (Docker, 2 vCPU, 16 GB RAM), which has room for OCR and the embedding model. Every push to `main` deploys automatically through `.github/workflows/deploy-hf.yml`.
 

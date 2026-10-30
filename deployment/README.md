@@ -16,4 +16,8 @@ docker compose up --build   # http://localhost:7860
 
 ## Hugging Face Spaces
 
-See "Deploy to Hugging Face Spaces" in the main [README](../README.md#-deploy-to-hugging-face-spaces-free).
+See "Deploy to Hugging Face Spaces" in the main [README](../README.md#-deploy-to-hugging-face-spaces-free-full-features).
+
+## Render (free)
+
+See "Deploy on Render" in the main [README](../README.md#-deploy-on-render-free-easiest).
