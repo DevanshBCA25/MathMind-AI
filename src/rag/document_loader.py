@@ -5,8 +5,6 @@ import fitz
 
 from langchain_core.documents import Document
 
-from src.ocr.ocr_engine import extract_text
-
 
 class DocumentLoader:
     """
@@ -174,6 +172,9 @@ class DocumentLoader:
         # ----------------------------------------------------
 
         try:
+
+            # Imported here so text PDFs work on servers without EasyOCR.
+            from src.ocr.ocr_engine import extract_text
 
             image = self._render_page(
                 page

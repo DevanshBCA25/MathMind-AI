@@ -1,0 +1,23 @@
+# Render Blueprint: free web service for MathMind AI.
+# Render dashboard → New → Blueprint → pick this repository.
+services:
+  - type: web
+    name: mathmind-ai
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: python main.py
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: EMBEDDING_PROVIDER
+        value: gemini
+      - key: STORAGE_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

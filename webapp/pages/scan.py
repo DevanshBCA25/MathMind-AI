@@ -100,6 +100,11 @@ def scan_page():
                                      spinner=True, timeout=None)
             try:
                 text = await run.io_bound(read_pdf if name.endswith('.pdf') else read_image, data)
+            except ModuleNotFoundError:
+                ui.notify('OCR is not installed on this server (the free host is too small for it). '
+                          'PDFs with real text still work, or type the question below.',
+                          type='warning', multi_line=True)
+                return
             except Exception as error:
                 ui.notify(f'Could not read this file: {error}', type='negative', multi_line=True)
                 return

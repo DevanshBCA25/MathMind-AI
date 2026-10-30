@@ -90,6 +90,9 @@ def documents_page():
                     try:
                         from src.rag.builder import build_vector_database
                         vector_db, report = await run.io_bound(build_vector_database, paths)
+                    except Exception as error:
+                        ui.notify(f'Could not build the search index: {error}', type='negative', multi_line=True)
+                        return
                     finally:
                         notice.dismiss()
                         build_button.props(remove='loading')

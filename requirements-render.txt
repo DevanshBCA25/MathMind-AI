@@ -1,0 +1,105 @@
+# Lighter requirements for small free servers (Render, 512 MB RAM).
+# Same as requirements.txt without PyTorch, EasyOCR and sentence-transformers:
+# Scan & Solve reads text PDFs only, and Document Q&A uses Gemini embeddings
+# (EMBEDDING_PROVIDER=gemini).
+
+# ================================
+# MathMind-AI - Web interface
+# ================================
+
+nicegui>=3.18,<4.0
+latex2mathml>=3.77,<4.0
+
+# ================================
+# MathMind-AI - Core
+# ================================
+
+numpy>=1.26,<3.0
+pandas>=2.2,<3.0
+Pillow>=10.0,<12.0
+scipy>=1.13,<2.0
+scikit-learn>=1.5,<2.0
+
+# ================================
+# Mathematics / Symbolic Computing
+# ================================
+
+sympy>=1.13,<2.0
+
+# ================================
+# Data Visualization / Analytics
+# ================================
+
+matplotlib>=3.8,<4.0
+seaborn>=0.13,<1.0
+plotly>=5.20,<7.0
+
+# ================================
+# Computer Vision
+# ================================
+
+opencv-python-headless>=4.10,<5.0
+
+# ================================
+# PDF / Document Processing
+# ================================
+
+PyMuPDF>=1.24,<2.0
+pypdf>=5.0,<7.0
+
+# ================================
+# LangChain / RAG
+# ================================
+
+langchain>=0.3,<1.0
+langchain-community>=0.3,<1.0
+langchain-text-splitters>=0.3,<1.0
+langchain-core>=0.3,<1.0
+
+# ================================
+# LangGraph / Multi-Agent
+# ================================
+
+langgraph>=0.2,<1.0
+
+# ================================
+# Vector Database / Embeddings
+# ================================
+
+faiss-cpu>=1.8,<2.0
+huggingface-hub>=0.24,<1.0
+
+# ================================
+# LLM Providers
+# ================================
+
+openai>=1.50,<2.0
+google-genai>=1.0,<3.0
+groq>=0.11,<1.0
+ollama>=0.4,<1.0
+
+# LangChain provider integrations
+langchain-openai>=0.3,<1.0
+langchain-google-genai>=2.0,<3.0
+langchain-groq>=0.3,<1.0
+
+# ================================
+# Environment / Configuration
+# ================================
+
+python-dotenv>=1.0,<2.0
+pydantic>=2.7,<3.0
+
+# ================================
+# API
+# ================================
+
+fastapi>=0.110,<1.0
+uvicorn>=0.30,<1.0
+requests>=2.31,<3.0
+
+# ================================
+# Utilities
+# ================================
+
+tqdm>=4.66,<5.0
