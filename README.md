@@ -7,7 +7,7 @@
 ![NiceGUI](https://img.shields.io/badge/UI-NiceGUI-5898d4)
 [![Deploy](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml/badge.svg)](https://github.com/DevanshBCA25/MathMind-AI/actions/workflows/deploy-hf.yml)
 
-**Live demo:** _link goes here once deployed (see [Deploy](#-deploy-on-render-free-easiest))._
+**Live demo:** https://mathmind-ai-t04l.onrender.com/ (free server: the first visit after a quiet spell takes about a minute to wake up)
 
 The web interface is written entirely in Python with [NiceGUI](https://nicegui.io) (Vue/Quasar under the hood), so every page is a real web app: no full-page reruns, instant updates, and it works well on phones.
 
