@@ -2,13 +2,25 @@ from nicegui import app, run, ui
 
 from webapp import state
 from webapp.layout import frame
-from webapp.widgets import rich_text
+from webapp.widgets import error_box, rich_text
 
 EXAMPLES = [
     'Explain the quadratic formula with an example',
     'What is the derivative of x² sin(x)? Show steps',
     'Why is 0.999... equal to 1?',
 ]
+
+
+def explain_error(provider, error):
+
+    text = str(error)
+
+    if 'not configured' in text or 'API key' in text or 'API_KEY' in text:
+        return (f'{provider} could not answer: its API key is missing or invalid. '
+                'Add a valid key on the server (or pick another model in the top bar). '
+                f'Details: {text}')
+
+    return f'{provider} could not answer. Details: {text}'
 
 
 def ask_model(provider, messages):
@@ -63,6 +75,7 @@ def chat_page():
                 ui.spinner(size='sm')
                 ui.label('Thinking...')
             thinking.visible = False
+            problem = ui.column().classes('w-full')
 
         async def send(text=None):
 
@@ -72,6 +85,7 @@ def chat_page():
                 return
 
             box.set_value('')
+            problem.clear()
             messages.append({'role': 'user', 'content': text})
             conversation.refresh()
             thinking.visible = True
@@ -82,8 +96,12 @@ def chat_page():
                 state.add_history('AI Chat', state.get_provider(), text, 'answered')
 
             except Exception as error:
+                # Shown inside the page (not as a toast) so it is never missed,
+                # and the question goes back in the box to try again.
                 messages.pop()
-                ui.notify(str(error), type='negative', multi_line=True)
+                box.set_value(text)
+                with problem:
+                    error_box(explain_error(state.get_provider(), error))
 
             finally:
                 thinking.visible = False
@@ -97,6 +115,7 @@ def chat_page():
             ui.button(icon='send', on_click=lambda: send()).props('round unelevated')
 
         def clear():
+            problem.clear()
             messages.clear()
             app.storage.user['chat'] = messages
             conversation.refresh()
