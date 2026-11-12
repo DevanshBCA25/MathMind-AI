@@ -194,4 +194,4 @@ Python · NiceGUI · SymPy · NumPy · SciPy · pandas · Plotly · Matplotlib �
 
 ## 👤 Author
 
-**Devansh**, BCA final-year project · [GitHub](https://github.com/DevanshBCA25)
+**Devansh**· [GitHub](https://github.com/DevanshBCA25)
